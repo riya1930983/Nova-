@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+</head>
+
+<body>
+  
+</body>
+
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AI Voice Commands - NOVA</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body {
+    background: #000;
+    color: #0ff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+  .nova-circle {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(circle at center, #00bfff, #004466);
+    border-radius: 50%;
+    box-shadow: 0 0 30px #00bfffaa, 0 0 70px #00bfffbb, 0 0 130px #00f0ffcc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    font-size: 1.8rem;
+    user-select: none;
+    text-shadow: 0 0 8px #00f0ffcc;
+    margin-bottom: 20px;
+  }
+  .glow-button {
+    cursor: pointer;
+    background: #00dfff;
+    border-radius: 10px;
+    padding: 15px 24px;
+    font-weight: 700;
+    color: #000;
+    box-shadow: 0 0 10px #00dfff80, 0 0 35px #00dfffcc;
+    border: none;
+    transition: box-shadow 0.3s ease, background 0.3s ease;
+    font-size: 1.1rem;
+  }
+  .glow-button:hover, .glow-button:focus {
+    background: #00ffff;
+    box-shadow: 0 0 18px #00ffffdd, 0 0 55px #00ffffee;
+    outline: none;
+  }
+  .status-text {
+    margin-bottom: 18px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #33fcff;
+    min-height: 1.5em;
+    text-align: center;
+  }
+  .wave {
+    position: absolute;
+    border: 2px dashed #0ff;
+    border-radius: 50%;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+<div>
+  <div class="nova-circle" aria-label="NOVA voice assistant circle">NOVA</div>
+  <div class="status-text" aria-live="polite" id="statusText">Initializing...</div>
+  <button class="glow-button" id="startBtn" aria-label="Start listening for voice commands" type="button">🎤 Start Listening</button>
+</div>
+
+<script>
+  const startBtn = document.getElementById('startBtn');
+  const statusText = document.getElementById('statusText');
+  const body = document.body;
+
+  // Create expanding wave circles for visual effect
+  function createWave() {
+    const wave = document.createElement('span');
+    wave.className = 'wave';
+    const size = 120 + Math.random() * 100;
+    wave.style.width = wave.style.height = size + 'px';
+    wave.style.top = `calc(50% - ${size / 2}px)`;
+    wave.style.left = `calc(50% - ${size / 2}px)`;
+    const duration = 3000 + Math.random() * 3000;
+    wave.style.borderColor = '#0ff';
+    wave.style.animation = `wavePulse ${duration}ms linear`;
+    body.appendChild(wave);
+    setTimeout(() => wave.remove(), duration);
+  }
+
+  setInterval(createWave, 800);
+
+  // Add CSS keyframes dynamically
+  const style = document.createElement('style');
+  style.innerHTML = `
+    @keyframes wavePulse {
+      0% {
+        transform: scale(0.2);
+        opacity: 0.6;
+        border-width: 2px;
+      }
+      100% {
+        transform: scale(3);
+        opacity: 0;
+        border-width: 5px;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Voice Recognition Setup
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    statusText.textContent = 'Sorry, your browser does not support voice recognition.';
+    startBtn.disabled = true;
+  } else {
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-US';
+
+    recognition.onstart = () => {
+      statusText.textContent = 'Listening... Please speak your command.';
+      startBtn.textContent = '🎙️ Listening... Click to Stop';
+      startBtn.disabled = false;
+    };
+    recognition.onerror = (e) => {
+      statusText.textContent = 'Error occurred: ' + e.error;
+      startBtn.textContent = '🎤 Start Listening';
+      startBtn.disabled = false;
+    };
+    recognition.onend = () => {
+      if (startBtn.textContent === '🎙️ Listening... Click to Stop') {
+        statusText.textContent = 'Click Start Listening to speak again.';
+        startBtn.textContent = '🎤 Start Listening';
+        startBtn.disabled = false;
+      }
+    };
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript.trim().toLowerCase();
+      statusText.textContent = `You said: "${transcript}"`;
+      processCommand(transcript);
+    };
+
+    let listening = false;
+    startBtn.addEventListener('click', () => {
+      if (!listening) {
+        recognition.start();
+        listening = true;
+        startBtn.disabled = true;
+      } else {
+        recognition.stop();
+        listening = false;
+      }
+    });
+
+    function speak(text) {
+      if ('speechSynthesis' in window) {
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = 'en-US';
+        utter.pitch = 1;
+        utter.rate = 1;
+        speechSynthesis.speak(utter);
+      }
+    }
+
+    function processCommand(command) {
+      startBtn.disabled = false;
+      startBtn.textContent = '🎤 Start Listening';
+      listening = false;
+
+      // Command: open google
+      if (command.includes('open google')) {
+        speak('Opening Google');
+        window.open('https://www.google.com', '_blank');
+        return;
+      }
+      // Command: open youtube
+      if (command.includes('open youtube')) {
+        speak('Opening YouTube');
+        window.open('https://www.youtube.com', '_blank');
+        return;
+      }
+      // Command: open whatsapp
+      if (command.includes('open whatsapp')) {
+        speak('Opening WhatsApp Web');
+        window.open('https://web.whatsapp.com', '_blank');
+        return;
+      }
+      // Command: play music Mohammad Faiz song
+      if (command.includes('play music') && command.includes('mohammad faiz')) {
+        speak('Playing Mohammed Faiz song');
+        // Example public audio file URL for demo (replace with preferred or local)
+        const audio = new Audio('https://actions.google.com/sounds/v1/ambiences/traffic_city.ogg');
+        audio.play();
+        statusText.textContent += " (Demo audio playing - replace with actual song URL.)";
+        return;
+      }
+
+      // Unknown command fallback
+      speak('Sorry, I did not recognize that command. Please try again.');
+      statusText.textContent = 'Command not recognized. Try: Open Google, Open YouTube, Open WhatsApp, or Play music Mohammad Faiz song.';
+    }
+  }
+</script>
+</body>
+</html>
+
