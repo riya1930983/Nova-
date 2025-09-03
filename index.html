@@ -198,53 +198,25 @@
       // Command: open youtube
       if (command.includes('open youtube')) {
         speak('Opening YouTube');
-        window.open('https://www.youtube.com', '_blank');
+        window.open('https://youtube.com/@riyanishad-h9z?si=C6vnybGRMJrL5tr-', '_blank');
         return;
       }
       // Command: open whatsapp
       if (command.includes('open whatsapp')) {
         speak('Opening WhatsApp Web');
-        window.open('https://web.whatsapp.com', '_blank');
+        window.open('https://whatsapp.com/channel/0029VbAq20FChq6SLwzwtN2z', '_blank');
         return;
       }
       // Command: play music Mohammad Faiz song
       if (command.includes('play music') && command.includes('mohammad faiz')) {
         speak('Playing Mohammed Faiz song');
         // Example public audio file URL for demo (replace with preferred or local)
-        const audio = new Audio('https://actions.google.com/sounds/v1/ambiences/traffic_city.ogg');
+        const audio = new Audio('https://youtube.com/@mohammad.faiz_official?si=0hNECPy5dNWxBhZo');
         audio.play();
         statusText.textContent += " (Demo audio playing - replace with actual song URL.)";
         return;
       }
-      const commands = {
-    "play music mohammad faiz song": () => {
-      window.open("https://www.youtube.com/results?search_query=Mohammad+Faiz+song", "_blank");
-      speak("Playing Mohammad Faiz songs from YouTube");
-    },
-    "play music": (text) => {
-      let query = text.replace("play music", "").trim();
-      let url = "https://www.youtube.com/results?search_query=" + encodeURIComponent(query || "music");
-      window.open(url, "_blank");
-      speak("Playing " + (query || "music"));
-    },
-    "time": () => {
-      speak("Abhi ka samay hai " + new Date().toLocaleTimeString("en-IN"));
-    },
-    "date": () => {
-      speak("Aaj ki tithi hai " + new Date().toLocaleDateString("en-IN"));
-    },
-    "aaj ka mosam": () => {
-      window.open("https://www.google.com/search?q=weather", "_blank");
-      speak("Here is today's weather update");
-    },
-    "hello": () => {
-      speak("Hello! How are you?");
-    },
-    "what is your name": () => {
-      speak("My name is Nova, your AI voice assistant.");
-    }
-  };
-
+    
       // Unknown command fallback
       speak('Sorry, I did not recognize that command. Please try again.');
       statusText.textContent = 'Command not recognized. Try: Open Google, Open YouTube, Open WhatsApp, or Play music Mohammad Faiz song.';
