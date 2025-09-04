@@ -208,20 +208,19 @@
         window.open('https://whatsapp.com/channel/0029VbAq20FChq6SLwzwtN2z', '_blank');
         return;
       }
-     // Command: play music Mohammad Faiz song
+
+// Command: play music Mohammad Faiz song
 if (command.includes('play music') && command.includes('mohammad faiz')) {
-    speak('Playing Mohammad Faiz song');
+    speak('Playing Mohammad Faiz song');  
+function handleCommand(command) {
+    command = command.toLowerCase();
 
-    // YouTube iframe website ke andar add karna
-    document.getElementById("musicPlayer").innerHTML = `
-        <iframe width="360" height="215" 
-        src="https://youtu.be/MBO5Q_zL3Yg?si=ksxIG3FgvTlVvSep" 
-        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-        allowfullscreen></iframe>
-    `;
-
-    return;
+    if (command.includes("play music mohammad faiz song")) {
+        // Directly open YouTube link in a new tab
+        window.open("https://youtu.be/MBO5Q_zL3Yg?si=MQD9zo56-9gApTpF", "_blank");
+    }
 }
+      
     
       // Unknown command fallback
       speak('Sorry, I did not recognize that command. Please try again.');
