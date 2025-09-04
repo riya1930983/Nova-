@@ -87,6 +87,7 @@
   <div class="status-text" aria-live="polite" id="statusText">Initializing...</div>
   <button class="glow-button" id="startBtn" aria-label="Start listening for voice commands" type="button">🎤 Start Listening</button>
 </div>
+  <div id="musicPlayer" style="margin-top:20px; text-align:center;"></div>
 
 <script>
   const startBtn = document.getElementById('startBtn');
@@ -207,15 +208,20 @@
         window.open('https://whatsapp.com/channel/0029VbAq20FChq6SLwzwtN2z', '_blank');
         return;
       }
-      // Command: play music Mohammad Faiz song
-      if (command.includes('play music') && command.includes('mohammad faiz')) {
-        speak('Playing Mohammed Faiz song');
-        // Example public audio file URL for demo (replace with preferred or local)
-        const audio = new Audio('https://youtube.com/@mohammad.faiz_official?si=0hNECPy5dNWxBhZo');
-        audio.play();
-        statusText.textContent += " (https://youtu.be/MBO5Q_zL3Yg?si=HNUF0ZbS6MXSNWNo)";
-        return;
-      }
+     // Command: play music Mohammad Faiz song
+if (command.includes('play music') && command.includes('mohammad faiz')) {
+    speak('Playing Mohammad Faiz song');
+
+    // YouTube iframe website ke andar add karna
+    document.getElementById("musicPlayer").innerHTML = `
+        <iframe width="360" height="215" 
+        src="https://youtu.be/MBO5Q_zL3Yg?si=ksxIG3FgvTlVvSep" 
+        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen></iframe>
+    `;
+
+    return;
+}
     
       // Unknown command fallback
       speak('Sorry, I did not recognize that command. Please try again.');
